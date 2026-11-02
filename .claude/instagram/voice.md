@@ -16,10 +16,10 @@ the words out loud. A line you would never say is not a draft, it is a retake.
 ## Who I am
 
 - **Name:** محمد أبو علي (Mohamed Abu Ali) — صيدلي
-- **Company:** Med
+- **Company:** MedFrame
 - **Language:** عربي، عامية مصرية
 - **Handle:**
-- **What I do, in one sentence:** بعلّم البيرسونال براندينج للعاملين في المجال الطبي فقط، من خلال شركتي Med.
+- **What I do, in one sentence:** بعلّم البيرسونال براندينج للعاملين في المجال الطبي فقط، من خلال شركتي MedFrame.
 - **Who I am talking to:** العاملين في المجال الطبي فقط (لسه محتاج تحديد أدق: أطباء؟ صيادلة؟ أطباء أسنان؟ مرحلة مهنية؟)
   (be specific: "photographers charging under $2,000",
   not "creatives")
