@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<title>MedFrame Intro Reel</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+/*FONTS*/
+:root{--ink:#071226;--navy:#0F2A55;--blue:#2F6BFF;--cyan:#2EC8F0;--white:#F4F8FF;--mute:#8FA3C4;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#000;overflow:hidden}
+#stage{position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden;background:var(--ink);transform-origin:0 0}
+.L{position:absolute;inset:0}
+.a{position:absolute;white-space:nowrap}
+.ar{direction:rtl;letter-spacing:0;font-family:'Cairo';line-height:1.35}
+.slam{font-family:'Cairo';font-weight:900;color:var(--white)}
+.lite{font-family:'Alexandria';font-weight:300;color:var(--white)}
+.ui{font-family:'Readex Pro'}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:.12em;font-size:20px;color:var(--white)}
+.c{transform-origin:50% 50%}
+#hud .corner{position:absolute;width:44px;height:44px;border-color:rgba(255,255,255,.45);border-style:solid}
+.tile{position:absolute;width:330px;height:290px;border-radius:36px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}
+.tile .t{font-family:'Cairo';font-weight:800;font-size:58px;direction:rtl}
+.dash{position:absolute;border-radius:14px;border:3px dashed rgba(255,255,255,.18)}
+.fill{position:absolute;border-radius:14px}
+.bubble{position:absolute;padding:22px 34px;border-radius:40px;font-family:'Readex Pro';font-size:42px;direction:rtl;white-space:nowrap}
+#ctrl{position:fixed;left:0;right:0;bottom:0;display:flex;gap:10px;align-items:center;padding:10px;background:#111c;color:#fff;font:14px system-ui}
+#ctrl input{flex:1}
+</style>
+</head>
+<body>
+<div id="stage">
+  <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2EC8F0"/><stop offset="1" stop-color="#2F6BFF"/></linearGradient></defs></svg>
+  <canvas id="bgfx" class="L" width="1080" height="1920"></canvas>
+
+  <!-- S1 / S8 : blogger lines -->
+  <div id="s1" class="L">
+    <div id="s1a" class="a ar slam c" style="font-size:150px">مش لازم</div>
+    <div id="s1b" class="a ar slam c" style="font-size:132px"><span>تبقى </span><span id="s1blog" style="color:var(--cyan)">بلوجر</span></div>
+    <div id="s1strike" class="a" style="height:16px;background:#FF5A5F;border-radius:8px"></div>
+    <div id="s1c" class="a ar lite c" style="font-size:64px">علشان المرضى يعرفوك</div>
+  </div>
+
+  <!-- S2 / S3 : phone -->
+  <div id="s2" class="L">
+    <div id="s2cap" class="a ar slam c" style="font-size:70px"></div>
+    <div id="phone" class="a" style="width:600px;height:1020px;border-radius:70px;background:#0B1A36;border:6px solid #2A4677;box-shadow:0 40px 120px rgba(0,0,0,.5)">
+      <div id="search" class="a" style="left:40px;top:90px;width:508px;height:96px;border-radius:48px;background:#16294D;display:flex;align-items:center;padding:0 34px;gap:18px;direction:rtl">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8FA3C4" stroke-width="2.5" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>
+        <span id="typed" class="ui" style="font-size:38px;color:#fff;direction:rtl"></span><span id="caret" style="width:4px;height:44px;background:var(--cyan)"></span>
+      </div>
+      <div id="results"></div>
+      <!-- empty profile -->
+      <div id="prof" class="a" style="left:0;top:0;width:588px;height:1008px">
+        <div class="a" style="left:214px;top:80px;width:160px;height:160px;border-radius:50%;background:#1B2D52;border:4px dashed #3A5585"></div>
+        <div id="profname" class="a ar ui" style="top:270px;width:588px;text-align:center;font-size:40px;color:#C9D6EE">صفحة العيادة</div>
+        <div class="a ar ui" style="top:330px;width:588px;text-align:center;font-size:34px;color:var(--mute)"><bdi>0</bdi> منشورات</div>
+        <div id="grid"></div>
+      </div>
+    </div>
+    <div id="phone2" class="a" style="width:600px;height:1020px;border-radius:70px;background:#0B1A36;border:6px solid var(--cyan);box-shadow:0 0 0 0 rgba(0,0,0,0)">
+      <div class="a" style="left:214px;top:80px;width:160px;height:160px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--blue))"></div>
+      <div class="a ar ui" style="top:270px;width:588px;text-align:center;font-size:40px;color:#fff">دكتور تاني</div>
+      <div class="a ar ui" style="top:330px;width:588px;text-align:center;font-size:34px;color:var(--cyan)">محجوز بالكامل</div>
+      <div id="grid2"></div>
+    </div>
+  </div>
+
+  <!-- S4 : logo -->
+  <div id="s4" class="L">
+    <div id="logo" class="a" style="width:420px;height:420px"><svg width="420" height="420" viewBox="0 0 200 200" style="overflow:visible">
+            <circle id="lcirc" cx="100" cy="100" r="96" fill="#173A73"/>
+      <path id="lplus" d="M82 40 h36 a8 8 0 0 1 8 8 v26 h26 a8 8 0 0 1 8 8 v36 a8 8 0 0 1 -8 8 h-26 v26 a8 8 0 0 1 -8 8 h-36 a8 8 0 0 1 -8 -8 v-26 h-26 a8 8 0 0 1 -8 -8 v-36 a8 8 0 0 1 8 -8 h26 v-26 a8 8 0 0 1 8 -8 z" fill="none" stroke="url(#lg)" stroke-width="13" stroke-linejoin="round"/>
+    </svg></div>
+    <div id="s4name" class="a c" style="font-family:'Cairo';font-weight:900;font-size:150px;color:#fff;letter-spacing:.01em">MedFrame</div>
+    <div id="s4sub" class="a ar lite c" style="font-size:62px">بيرسونال براندينج</div>
+    <div id="s4sub2" class="a ar c" style="font-size:64px;color:#fff;font-family:'Alexandria';font-weight:300">للدكاترة <span style="font-family:'Aref Ruqaa';font-weight:700;color:var(--cyan);font-size:96px">وبس</span></div>
+  </div>
+
+  <!-- S5 : four services -->
+  <div id="s5" class="L">
+    <div id="s5t" class="a ar slam c" style="font-size:96px">بنبني اسمك <span style="color:var(--cyan)">أونلاين</span></div>
+    <div id="tiles"></div>
+  </div>
+
+  <!-- S6 : camera -->
+  <div id="s6" class="L">
+    <div id="vf" class="a" style="left:0;top:0;width:1080px;height:1920px">
+      <div class="corner a" id="vf1" style="border-width:8px 8px 0 0"></div>
+      <div class="corner a" id="vf2" style="border-width:8px 0 0 8px"></div>
+      <div class="corner a" id="vf3" style="border-width:0 8px 8px 0"></div>
+      <div class="corner a" id="vf4" style="border-width:0 0 8px 8px"></div>
+      <div id="rec" class="a mono" style="font-size:30px;display:flex;align-items:center;gap:14px"><span id="recdot" style="width:22px;height:22px;border-radius:50%;background:#FF4A4A"></span>REC</div>
+    </div>
+    <div id="s6a" class="a ar slam c" style="font-size:96px">إنت تقف قدّام</div>
+    <div id="s6a2" class="a ar slam c" style="font-size:118px;color:var(--cyan)">الكاميرا</div>
+    <div id="s6b" class="a ar slam c" style="font-size:96px">وترجع لعيادتك</div>
+  </div>
+
+  <!-- S7 : DM -->
+  <div id="s7" class="L">
+    <div id="s7cap" class="a ar slam c" style="font-size:80px">ابعت <span style="color:var(--cyan)">عيادة</span></div>
+    <div id="s7cap2" class="a ar lite c" style="font-size:58px">في الرسايل</div>
+    <div id="chat" class="a" style="width:700px;height:760px;border-radius:56px;background:#0B1A36;border:5px solid #24406F">
+      <div class="a" style="left:0;top:0;width:690px;height:120px;border-bottom:3px solid #1C3360;display:flex;align-items:center;justify-content:flex-end;gap:20px;padding:0 36px">
+        <span class="mono" style="letter-spacing:.02em;font-size:30px">med_frame_studio</span>
+        <svg width="64" height="64" viewBox="0 0 200 200"><circle cx="100" cy="100" r="96" fill="#173A73"/><path d="M82 40 h36 a8 8 0 0 1 8 8 v26 h26 a8 8 0 0 1 8 8 v36 a8 8 0 0 1 -8 8 h-26 v26 a8 8 0 0 1 -8 8 h-36 a8 8 0 0 1 -8 -8 v-26 h-26 a8 8 0 0 1 -8 -8 v-36 a8 8 0 0 1 8 -8 h26 v-26 a8 8 0 0 1 8 -8 z" fill="none" stroke="#2EC8F0" stroke-width="14"/></svg>
+      </div>
+      <div id="b1" class="bubble" style="background:linear-gradient(135deg,#2F6BFF,#6A4CFF);color:#fff">عيادة</div>
+      <div id="b2" class="bubble" style="background:#1B2D52;color:#E6EEFF;font-size:36px">أهلاً يا دكتور، ابعتلنا لينك صفحتك</div>
+      <div id="inbar" class="a" style="left:30px;top:640px;width:630px;height:90px;border-radius:45px;background:#16294D;display:flex;align-items:center;padding:0 30px;gap:16px;direction:rtl">
+        <span id="intyped" class="ui" style="font-size:38px;color:#fff"></span><span id="incaret" style="width:4px;height:42px;background:var(--cyan)"></span>
+        <span style="flex:1"></span>
+        <svg id="send" width="46" height="46" viewBox="0 0 24 24" fill="#2EC8F0" style="transform:scaleX(-1)"><path d="M3 11.5 21 3l-8.5 18-2-7.5z"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8 : end -->
+  <div id="s8" class="L">
+    <div id="s8a" class="a ar lite c" style="font-size:66px">علشان المرضى يعرفوك</div>
+    <div id="s8b" class="a ar slam c" style="font-size:90px"><span>من غير ما تبقى </span><span id="s8blog" style="color:var(--cyan)">بلوجر</span></div>
+    <div id="s8strike" class="a" style="height:14px;background:#FF5A5F;border-radius:7px"></div>
+    <div id="elogo" class="a" style="width:260px;height:260px"><svg width="260" height="260" viewBox="0 0 200 200"><circle cx="100" cy="100" r="96" fill="#173A73"/><path d="M82 40 h36 a8 8 0 0 1 8 8 v26 h26 a8 8 0 0 1 8 8 v36 a8 8 0 0 1 -8 8 h-26 v26 a8 8 0 0 1 -8 8 h-36 a8 8 0 0 1 -8 -8 v-26 h-26 a8 8 0 0 1 -8 -8 v-36 a8 8 0 0 1 8 -8 h26 v-26 a8 8 0 0 1 8 -8 z" fill="none" stroke="url(#lg)" stroke-width="13" stroke-linejoin="round"/></svg></div>
+    <div id="ename" class="a c" style="font-family:'Cairo';font-weight:900;font-size:110px;color:#fff">MedFrame</div>
+    <div id="etag" class="a ar lite c" style="font-size:48px;color:#C9D6EE">بيرسونال براندينج للدكاترة</div>
+    <div id="ehandle" class="a mono c" style="font-size:34px;letter-spacing:.06em;color:var(--cyan)"></div>
+  </div>
+
+  <!-- transition wipe + HUD -->
+  <div id="wipe" class="a" style="top:0;height:1920px"></div>
+  <div id="hud" class="L" style="opacity:.5">
+    <div class="corner" style="left:60px;top:250px;border-width:3px 0 0 3px"></div>
+    <div class="corner" style="left:806px;top:250px;border-width:3px 3px 0 0"></div>
+    <div class="corner" style="left:60px;top:1396px;border-width:0 0 3px 3px"></div>
+    <div class="corner" style="left:806px;top:1396px;border-width:0 3px 3px 0"></div>
+    <div id="hudn" class="a mono" style="left:120px;top:258px;font-size:18px"></div>
+    <div id="hudc" class="a mono" style="left:120px;top:1410px;font-size:18px"></div>
+  </div>
+  <canvas id="vig" class="L" width="540" height="960" style="width:1080px;height:1920px;pointer-events:none"></canvas>
+</div>
+<div id="ctrl"><button id="pp">▶</button><input id="scrub" type="range" min="0" max="1000" value="0"><span id="tc">0.00</span></div>
+
+<script>
+/* BEAT SHEET (times come from LINES = voiceover line starts; update after real VO)
+   L0 hook        "مش لازم تبقى بلوجر"          slam + red strike on بلوجر       | kick, impact on strike
+   L1 search      phone rises, typing a search   skeleton results                 | whoosh in, key ticks
+   L2 empty page  empty profile, then other doc  card slides in from right       | whoosh, soft thud
+   L3 brand       cyan wipe -> logo draws        MedFrame + للدكاترة وبس         | riser -> impact
+   L4 services    4 tiles slam right->left        محتوى/تصوير/مونتاج/نشر          | tick per tile
+   L5 camera      viewfinder + REC               zoom out                          | whoosh
+   L6 DM          typing «عيادة», send, reply                                    | ticks, send blip
+   L7 loop        echo hook + strike, end card   @med_frame_studio types in      | impact, ring-out
+*/
+const VO_B64 = "/*VO*/";
+let LINES = /*LINES*/[[0.2,3.9],[4.25,9.2],[9.55,13.9],[14.25,18.9],[19.25,23.6],[23.95,27.9],[28.25,32.8],[33.15,37.3]];
+const END_HOLD = 2.6;
+const VO_OFFSET = 0.3;
+const DUR = LINES[LINES.length-1][1] + END_HOLD;
+window.VIDEO = {w:1080,h:1920,duration:DUR};
+
+function spring(t,w=14,z=.82){if(t<=0)return 0;if(z>=1)return 1-Math.exp(-w*t)*(1+w*t);const wd=w*Math.sqrt(1-z*z);return 1-Math.exp(-z*w*t)*(Math.cos(wd*t)+(z*w/wd)*Math.sin(wd*t));}
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const ease=x=>(x=clamp(x),x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2);
+const easeOut=x=>1-Math.pow(1-clamp(x),3);
+const lerp=(a,b,k)=>a+(b-a)*k;
+const seg=(t,a,b)=>clamp((t-a)/(b-a));
+const rng=s=>()=>(s=(s+0x6D2B79F5)|0,s=Math.imul(s^(s>>>15),1|s),s^=s+Math.imul(s^(s>>>7),61|s),((s^(s>>>14))>>>0)/4294967296);
+const $=id=>document.getElementById(id);
+const CX=455; // content centre (right 230px kept clear)
+
+// place an element centred at (x,y) with transform extras
+function put(el,x,y,{s=1,o=1,r=0,tx=0,ty=0,blur=0}={}){
+  const w=el.offsetWidth,h=el.offsetHeight;
+  el.style.left=(x-w/2)+'px';el.style.top=(y-h/2)+'px';
+  el.style.transform=`translate(${tx}px,${ty}px) scale(${s}) rotate(${r}deg)`;
+  el.style.opacity=o;el.style.filter=blur>0.3?`blur(${blur.toFixed(1)}px)`:'none';
+}
+// word entrance from the right, with blur, springing in
+function enter(t,t0,{w=16,z=.7,dist=140}={}){
+  const k=spring(t-t0,w,z);return {o:clamp((t-t0)*6),tx:(1-k)*dist,blur:Math.max(0,(1-clamp((t-t0)*5))*14),s:1};
+}
+// exit to the left
+function leave(t,t1,d=.35){const k=ease(seg(t,t1,t1+d));return {o:1-k,tx:-k*160};}
+const mix=(a,b)=>({o:a.o*b.o,tx:(a.tx||0)+(b.tx||0),blur:a.blur||0,s:a.s||1});
+const vis=(el,on)=>{el.style.display=on?'block':'none'};
+
+// ---------- build repeated elements once ----------
+const grid=$('grid'),grid2=$('grid2');
+for(let i=0;i<9;i++){const r=Math.floor(i/3),c=i%3;
+  const d=document.createElement('div');d.className='dash';d.style.cssText+=`left:${40+c*172}px;top:${420+r*172}px;width:160px;height:160px`;grid.appendChild(d);
+  const f=document.createElement('div');f.className='fill';const hue=[200,215,190,225,205,185,230,195,210][i];
+  f.style.cssText+=`left:${40+c*172}px;top:${420+r*172}px;width:160px;height:160px;background:linear-gradient(135deg,hsl(${hue},80%,58%),hsl(${hue+25},75%,40%))`;grid2.appendChild(f);}
+const res=$('results');
+for(let i=0;i<4;i++){const d=document.createElement('div');d.className='a';d.style.cssText=`left:40px;top:${240+i*170}px;width:508px;height:140px;border-radius:28px;background:#13254A`;
+  d.innerHTML=`<div class="a" style="right:24px;top:24px;width:92px;height:92px;border-radius:50%;background:#1F3866"></div><div class="a" style="right:140px;top:36px;width:${260-i*30}px;height:22px;border-radius:11px;background:#2A4677"></div><div class="a" style="right:140px;top:80px;width:${180-i*20}px;height:18px;border-radius:9px;background:#1F3866"></div>`;res.appendChild(d);}
+const ICONS={
+ pen:'<path d="M4 20l4-1 11-11-3-3L5 16z M14 6l3 3" />',
+ cam:'<rect x="3" y="7" width="18" height="13" rx="3"/><circle cx="12" cy="13.5" r="3.5"/><path d="M8 7l2-3h4l2 3"/>',
+ cut:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18M3 15h18M8 5v4M13 5v4M8 15v4M16 15v4"/>',
+ send:'<path d="M3 11.5 21 3l-8.5 18-2-7.5z"/>'};
+const TILES=[['محتوى','pen'],['تصوير','cam'],['مونتاج','cut'],['نشر','send']];
+const tiles=$('tiles');
+TILES.forEach(([t,ic],i)=>{const d=document.createElement('div');d.className='tile';d.id='tile'+i;
+  d.style.background=i%3===0?'linear-gradient(135deg,#2EC8F0,#2F6BFF)':'#13305E';
+  d.innerHTML=`<svg width="110" height="110" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONS[ic]}</svg><div class="t" style="color:#fff">${t}</div>`;tiles.appendChild(d);});
+const plusLen=(()=>{try{return $('lplus').getTotalLength()}catch(e){return 700}})();
+$('lplus').style.strokeDasharray=plusLen;
+
+// background: faint grid + vignette, drawn once
+(function(){const c=$('bgfx').getContext('2d');c.strokeStyle='rgba(120,160,230,.07)';c.lineWidth=2;
+  for(let x=0;x<=1080;x+=90){c.beginPath();c.moveTo(x,0);c.lineTo(x,1920);c.stroke();}
+  for(let y=0;y<=1920;y+=90){c.beginPath();c.moveTo(0,y);c.lineTo(1080,y);c.stroke();}
+  const v=$('vig').getContext('2d');const g=v.createRadialGradient(270,430,120,270,480,640);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,.55)');v.fillStyle=g;v.fillRect(0,0,540,960);})();
+
+const graph=s=>[...new Intl.Segmenter('ar',{granularity:'grapheme'}).segment(s)].map(x=>x.segment);
+const SEARCH=graph('دكتور جلدية قريب مني');
+const DMWORD=graph('عيادة');
+const HANDLE='@med_frame_studio';
+const BG=['#071226','#0B1A3A','#0B1A3A','#0F2A55','#071226','#0B1A3A','#071226','#0F2A55'];
+const CATS=['HOOK','SEARCH','EMPTY PAGE','BRAND','SERVICES','CAMERA','DM','END'];
+
+function sceneAt(t){let k=0;for(let i=0;i<LINES.length;i++)if(t>=LINES[i][0]-0.35)k=i;return k;}
+
+window.seek=function(T){
+  const t=((T%DUR)+DUR)%DUR;
+  const L=LINES, sc=sceneAt(t);
+  ['s1','s2','s4','s5','s6','s7','s8'].forEach(id=>vis($(id),false));
+  $('stage').style.background=BG[sc];
+  $('hudn').textContent=`0${sc+1} / 08`;$('hudc').textContent=CATS[sc];
+
+  // ---- wipe between scenes (right -> left sweep in the next scene's colour) ----
+  let wipeOn=false;
+  for(let i=1;i<L.length;i++){const a=L[i][0]-0.45,b=L[i][0]+0.05;if(t>=a&&t<=b){const k=ease(seg(t,a,b));
+    const col=i===3?'#2EC8F0':'#2F6BFF';const x0=lerp(1080,-1080,k);
+    $('wipe').style.cssText=`top:0;height:1920px;left:${x0}px;width:1080px;background:${col};position:absolute;transform:skewX(-8deg)`;wipeOn=true;}}
+  if(!wipeOn)$('wipe').style.cssText='display:none';
+
+  // ---- S1 hook ----
+  if(sc===0){vis($('s1'),true);const t0=L[0][0],t1=L[1][0]-0.45;
+    const lv=leave(t,t1);
+    const e1=enter(t,t0,{w:18,z:.6}),e2=enter(t,t0+.45,{w:18,z:.6}),e3=enter(t,t0+1.9);
+    put($('s1a'),CX,640,{...mix(e1,lv),s:lerp(1.35,1,spring(t-t0,16,.6))});
+    put($('s1b'),CX,820,{...mix(e2,lv)});
+    put($('s1c'),CX,1040,{...mix(e3,lv)});
+    const b=$('s1blog'),line=$('s1b');const k=ease(seg(t,t0+1.05,t0+1.4));
+    const bx=line.offsetLeft+b.offsetLeft, bw=b.offsetWidth;
+    const st=$('s1strike');st.style.top=(line.offsetTop+line.offsetHeight*0.56)+'px';st.style.left=(bx+bw*(1-k))+'px';st.style.width=(bw*k)+'px';
+    st.style.transform=`translate(${lv.tx}px,0) rotate(-4deg)`;st.style.opacity=lv.o;
+  }
+
+  // ---- S2 search + S3 empty page ----
+  if(sc===1||sc===2){vis($('s2'),true);
+    const a=L[1][0],m=L[2][0],e=L[3][0]-0.45;
+    const rise=spring(t-a+0.2,9,.85);
+    const ph=$('phone');
+    let px=CX,py=lerp(2000,880,rise),ps=1,po=1;
+    // S3: phone pushes left & dims when the other doctor arrives
+    const swap=ease(seg(t,m+1.05,m+1.6));
+    px=lerp(CX,CX-330,swap);ps=lerp(1,.78,swap);po=lerp(1,.45,swap);
+    const out=leave(t,e);
+    put(ph,px,py,{s:ps,o:po*out.o,tx:out.tx});
+    // typing
+    const n=Math.floor(clamp((t-(a+0.45))/1.2)*SEARCH.length);
+    $('typed').textContent=SEARCH.slice(0,n).join('');
+    $('caret').style.opacity=(Math.floor(t*2.5)%2===0||n<SEARCH.length)?1:0;
+    // results skeleton (S2) vs empty profile (S3)
+    const pr=ease(seg(t,m-0.2,m+0.25));
+    [...res.children].forEach((d,i)=>{const k=spring(t-(a+1.75+i*.12),14,.75);d.style.opacity=clamp(k)*(1-pr);d.style.transform=`translateX(${(1-k)*80}px)`;});
+    $('search').style.opacity=1-pr;
+    $('prof').style.opacity=pr;
+    [...grid.children].forEach((d,i)=>{const k=spring(t-(m+0.2+i*.05),16,.7);d.style.transform=`scale(${lerp(.6,1,k)})`;d.style.opacity=clamp(k);});
+    // other doctor's page
+    const p2=$('phone2'),k2=spring(t-(m+1.05),11,.78);
+    put(p2,lerp(1300,CX+150,k2),880,{s:.86,o:(t>m+0.95?1:0)*out.o,tx:out.tx});
+    p2.style.boxShadow=`0 0 ${80*k2}px rgba(46,200,240,${.45*k2})`;
+    [...grid2.children].forEach((d,i)=>{const k=spring(t-(m+1.35+i*.05),16,.7);d.style.transform=`scale(${lerp(.4,1,k)})`;d.style.opacity=clamp(k);});
+    // caption
+    const cap=$('s2cap');
+    let txt,ct0;
+    if(t<m-0.1){txt='المريض بيدوّر عليك';ct0=a+0.25;}
+    else if(t<m+1.05){txt='صفحتك فاضية؟';ct0=m;}
+    else{txt='بيحجز عند غيرك';ct0=m+1.1;}
+    if(cap.textContent!==txt)cap.textContent=txt;
+    put(cap,CX,300,{...mix(enter(t,ct0),out)});
+  }
+
+  // ---- S4 brand ----
+  if(sc===3){vis($('s4'),true);const a=L[3][0],e=L[4][0]-0.45;const out=leave(t,e);
+    const pop=spring(t-a,12,.6);
+    put($('logo'),CX,620,{s:lerp(.2,1,pop),o:clamp((t-a)*5)*out.o,tx:out.tx,r:lerp(-90,0,spring(t-a,9,.8))});
+    $('lplus').style.strokeDashoffset=plusLen*(1-ease(seg(t,a+0.15,a+1.0)));
+    put($('s4name'),CX,960,{...mix(enter(t,a+0.55,{w:18,z:.6}),out),s:lerp(1.3,1,spring(t-a-.55,16,.6))});
+    put($('s4sub'),CX,1120,{...mix(enter(t,a+1.9),out)});
+    put($('s4sub2'),CX,1240,{...mix(enter(t,a+2.9),out)});
+  }
+
+  // ---- S5 services ----
+  if(sc===4){vis($('s5'),true);const a=L[4][0],e=L[5][0]-0.45,d=L[4][1]-a;const out=leave(t,e);
+    put($('s5t'),CX,420,{...mix(enter(t,a+0.05),out)});
+    const pos=[[CX+180,720],[CX-180,720],[CX+180,1040],[CX-180,1040]];
+    TILES.forEach((_,i)=>{const t0=a+d*(0.42+i*0.14);const k=spring(t-t0,17,.6);
+      put($('tile'+i),pos[i][0],pos[i][1],{s:lerp(.3,1,k),o:clamp((t-t0)*8)*out.o,tx:out.tx+(1-k)*60,r:lerp(8,0,k)});});
+  }
+
+  // ---- S6 camera ----
+  if(sc===5){vis($('s6'),true);const a=L[5][0],e=L[6][0]-0.45,d=L[5][1]-a;const out=leave(t,e);
+    const z=spring(t-a,10,.8),zo=ease(seg(t,a+d*0.55,a+d*0.75));
+    const inset=lerp(20,120,z)+zo*260;const box=[60+inset*.6,250+inset,850-inset*.6,1440-inset];
+    const cs=[['vf1',box[2]-44,box[1]],['vf2',box[0],box[1]],['vf3',box[2]-44,box[3]-44],['vf4',box[0],box[3]-44]];
+    cs.forEach(([id,x,y])=>{const el=$(id);el.style.left=x+'px';el.style.top=y+'px';el.style.opacity=out.o*(1-zo*.6);});
+    const rec=$('rec');rec.style.left=(box[0]+30)+'px';rec.style.top=(box[1]+24)+'px';rec.style.opacity=out.o*(1-zo);
+    $('recdot').style.opacity=Math.floor(t*2)%2?0.25:1;
+    const sw=seg(t,a+d*0.5,a+d*0.62);
+    put($('s6a'),CX,700,{...mix(enter(t,a+0.1),out),o:enter(t,a+.1).o*out.o*(1-sw),tx:out.tx-sw*160});
+    put($('s6a2'),CX,850,{...mix(enter(t,a+0.75,{w:18,z:.55}),out),o:enter(t,a+.75).o*out.o*(1-sw),tx:out.tx-sw*160});
+    put($('s6b'),CX,800,{...mix(enter(t,a+d*0.58),out)});
+  }
+
+  // ---- S7 DM ----
+  if(sc===6){vis($('s7'),true);const a=L[6][0],e=L[7][0]-0.45,d=L[6][1]-a;const out=leave(t,e);
+    put($('s7cap'),CX,330,{...mix(enter(t,a+0.05),out)});
+    put($('s7cap2'),CX,450,{...mix(enter(t,a+0.6),out)});
+    const rise=spring(t-a-0.2,10,.85);
+    put($('chat'),CX,lerp(1700,960,rise),{o:out.o,tx:out.tx});
+    const ts=a+0.9,te=ts+0.9,send=te+0.35;
+    const n=t<send?Math.floor(clamp((t-ts)/(te-ts))*DMWORD.length):0;
+    $('intyped').textContent=DMWORD.slice(0,n).join('');
+    $('incaret').style.opacity=t<send?(Math.floor(t*2.5)%2===0||n<DMWORD.length?1:0):1;
+    $('send').style.transform=`scaleX(-1) scale(${1+0.35*Math.exp(-12*Math.max(0,t-send))*(t>send?1:0)})`;
+    const b1=$('b1'),k1=spring(t-send,15,.65);
+    b1.style.left='40px';b1.style.top=(470-k1*200)+'px';b1.style.opacity=clamp((t-send)*8);b1.style.transform=`scale(${lerp(.5,1,k1)})`;b1.style.transformOrigin='0% 100%';
+    const r2=send+d*0.28,b2=$('b2'),k2=spring(t-r2,14,.7);
+    b2.style.right='40px';b2.style.left='auto';b2.style.top=(470)+'px';b2.style.opacity=clamp((t-r2)*8);b2.style.transform=`scale(${lerp(.5,1,k2)})`;b2.style.transformOrigin='100% 100%';
+  }
+
+  // ---- S8 loop + end card ----
+  if(sc===7){vis($('s8'),true);const a=L[7][0],d=L[7][1]-a,endT=L[7][1]-0.2;
+    const gone=ease(seg(t,endT,endT+0.4));
+    put($('s8a'),CX,640,{...enter(t,a+0.05),o:enter(t,a+.05).o*(1-gone),tx:-gone*160});
+    put($('s8b'),CX,800,{...enter(t,a+d*0.35,{w:18,z:.6}),o:enter(t,a+d*.35).o*(1-gone),tx:-gone*160});
+    const b=$('s8blog'),line=$('s8b');const k=ease(seg(t,a+d*0.72,a+d*0.82));
+    const bx=line.offsetLeft+b.offsetLeft,bw=b.offsetWidth,st=$('s8strike');
+    st.style.top=(line.offsetTop+line.offsetHeight*0.56)+'px';st.style.left=(bx+bw*(1-k))+'px';st.style.width=(bw*k)+'px';
+    st.style.transform=`translate(${-gone*160}px,0) rotate(-4deg)`;st.style.opacity=1-gone;
+    const ec=endT+0.25,pop=spring(t-ec,12,.62);
+    put($('elogo'),CX,640,{s:lerp(.2,1,pop),o:clamp((t-ec)*5)});
+    put($('ename'),CX,880,{...enter(t,ec+0.35,{w:18,z:.6})});
+    put($('etag'),CX,1010,{...enter(t,ec+0.8)});
+    const hn=Math.floor(clamp((t-(ec+1.1))/0.9)*HANDLE.length);
+    $('ehandle').textContent=HANDLE.slice(0,hn)+(t<ec+2.1&&Math.floor(t*3)%2===0?'_':'');
+    put($('ehandle'),CX,1120,{o:t>ec+1.05?1:0});
+  }
+};
+
+// ---------- sound ----------
+function b64ToBuf(b){const s=atob(b),u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return u.buffer;}
+window.buildAudio=async function(ctx){
+  const sr=ctx.sampleRate,R=rng(7);
+  const nb=ctx.createBuffer(1,sr*2,sr),nd=nb.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=R()*2-1;
+  const master=ctx.createGain();master.gain.value=0.9;master.connect(ctx.destination);
+  const music=ctx.createGain();music.gain.value=VO_B64.length>20?0.32:0.55;music.connect(master);
+  const env=(g,t,a,peak,dec)=>{g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(peak,t+a);g.gain.exponentialRampToValueAtTime(0.0001,t+a+dec);};
+  const kick=t=>{const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.setValueAtTime(140,t);o.frequency.exponentialRampToValueAtTime(42,t+.18);env(g,t,.003,.9,.28);o.connect(g).connect(music);o.start(t);o.stop(t+.35);};
+  const hat=(t,v=.12)=>{const s=ctx.createBufferSource();s.buffer=nb;const f=ctx.createBiquadFilter();f.type='highpass';f.frequency.value=8000;const g=ctx.createGain();env(g,t,.001,v,.05);s.connect(f).connect(g).connect(music);s.start(t,R()*1.5,.08);};
+  const whoosh=(t,d=.5,v=.35)=>{const s=ctx.createBufferSource();s.buffer=nb;s.loop=true;const f=ctx.createBiquadFilter();f.type='bandpass';f.Q.value=1.2;f.frequency.setValueAtTime(300,t);f.frequency.exponentialRampToValueAtTime(4000,t+d);const g=ctx.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+d*.7);g.gain.linearRampToValueAtTime(0,t+d);s.connect(f).connect(g).connect(master);s.start(t);s.stop(t+d+.05);};
+  const impact=(t,v=.6)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.setValueAtTime(90,t);o.frequency.exponentialRampToValueAtTime(30,t+.5);env(g,t,.005,v,.7);o.connect(g).connect(master);o.start(t);o.stop(t+.8);
+    const s=ctx.createBufferSource();s.buffer=nb;const f=ctx.createBiquadFilter();f.type='lowpass';f.frequency.value=1800;const g2=ctx.createGain();env(g2,t,.002,v*.5,.25);s.connect(f).connect(g2).connect(master);s.start(t,0,.4);};
+  const blip=(t,fr=1200,v=.12)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.value=fr;env(g,t,.003,v,.09);o.connect(g).connect(master);o.start(t);o.stop(t+.15);};
+  const pad=(t,d,f)=>{[f,f*1.5,f*2].forEach((fr,i)=>{const o=ctx.createOscillator(),g=ctx.createGain(),lp=ctx.createBiquadFilter();o.type='sawtooth';o.frequency.value=fr;lp.type='lowpass';lp.frequency.value=900;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.05/(i+1),t+.8);g.gain.setValueAtTime(.05/(i+1),t+d-.6);g.gain.linearRampToValueAtTime(0,t+d);o.connect(lp).connect(g).connect(music);o.start(t);o.stop(t+d+.05);});};
+  // 110 BPM bed
+  const beat=60/110,L=LINES,D=VIDEO.duration;
+  for(let t=L[0][0];t<D-1.2;t+=beat){kick(t);hat(t+beat/2);}
+  const roots=[110,98,87.3,130.8,110,98,116.5,110];
+  L.forEach(([a,b],i)=>pad(a,(i<L.length-1?L[i+1][0]:D)-a,roots[i]/2));
+  // effects
+  impact(L[0][0]+1.1,.5);
+  for(let i=1;i<L.length;i++)whoosh(L[i][0]-0.5,.55);
+  for(let i=0;i<SEARCH.length;i++)blip(L[1][0]+0.45+i*1.2/SEARCH.length,1500+R()*400,.05);
+  impact(L[3][0]+0.1,.7);
+  const d4=L[4][1]-L[4][0];for(let i=0;i<4;i++)blip(L[4][0]+d4*(0.42+i*0.14),700+i*180,.18);
+  for(let i=0;i<DMWORD.length;i++)blip(L[6][0]+0.9+i*0.9/DMWORD.length,1700,.06);
+  blip(L[6][0]+2.15,880,.2);blip(L[6][0]+2.27,1320,.16);
+  impact(L[7][0]+(L[7][1]-L[7][0])*0.72,.45);
+  blip(L[7][1]+0.05,660,.2);blip(L[7][1]+0.2,990,.14);
+  // voiceover
+  if(VO_B64.length>20){const vb=await ctx.decodeAudioData(b64ToBuf(VO_B64));const s=ctx.createBufferSource();s.buffer=vb;const g=ctx.createGain();g.gain.value=1.0;s.connect(g).connect(ctx.destination);s.start(VO_OFFSET);}
+};
+
+// ---------- preview ----------
+const isRender=location.search.includes('render');
+if(isRender){$('ctrl').style.display='none';}
+else{const fit=()=>{const k=Math.min(innerWidth/1080,(innerHeight-50)/1920);$('stage').style.transform=`scale(${k})`;$('stage').style.left=((innerWidth-1080*k)/2)+'px';};addEventListener('resize',fit);fit();
+  let buf,ac,src,startAt=0,offset=0,playing=false;
+  async function play(){ac??=new AudioContext();if(!buf){const off=new OfflineAudioContext(2,Math.ceil(48000*DUR),48000);await buildAudio(off);buf=await off.startRendering();}
+    src=ac.createBufferSource();src.buffer=buf;src.connect(ac.destination);src.start(0,offset%DUR);startAt=ac.currentTime;playing=true;$('pp').textContent='❚❚';}
+  function pause(){if(!playing)return;offset+=ac.currentTime-startAt;src.stop();playing=false;$('pp').textContent='▶';}
+  const now=()=>playing?(offset+ac.currentTime-startAt)%DUR:offset;
+  $('pp').onclick=()=>playing?pause():play();
+  $('scrub').oninput=e=>{const was=playing;pause();offset=e.target.value/1000*DUR;if(was)play();};
+  (function loop(){const t=now();seek(t);$('tc').textContent=t.toFixed(2);if(playing)$('scrub').value=t/DUR*1000;requestAnimationFrame(loop);})();}
+seek(0);
+</script>
+</body>
+</html>
