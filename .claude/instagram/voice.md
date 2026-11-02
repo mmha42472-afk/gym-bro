@@ -20,14 +20,12 @@ the words out loud. A line you would never say is not a draft, it is a retake.
 - **Language:** عربي، عامية مصرية
 - **Handle:**
 - **What I do, in one sentence:** بعلّم البيرسونال براندينج للعاملين في المجال الطبي فقط، من خلال شركتي MedFrame.
-- **Who I am talking to:** العاملين في المجال الطبي فقط (لسه محتاج تحديد أدق: أطباء؟ صيادلة؟ أطباء أسنان؟ مرحلة مهنية؟)
-  (be specific: "photographers charging under $2,000",
-  not "creatives")
-- **What I sell:**
+- **Who I am talking to:** دكاترة عندهم عيادات خاصة ومعندهمش حضور رقمي قوي (صفحاتهم ضعيفة أو مش موجودة).
+- **What I sell:** باقات شهرية من MedFrame: برامج متابعة + تصوير ومونتاج فيديوهات + تصميم وكتابة بوستات للدكتور. (السعر مش بيتقال في المحتوى.)
 
 ## What I sound like
 
-- **Three of my own reels or captions that sound most like me:** (paste them)
+- **Three of my own reels or captions that sound most like me:** لسه مفيش، الحساب لسه بيبدأ. ابني الأسلوب من الملف ده لحد ما يبقى فيه ريلز حقيقية.
 - **On camera I am:** (fast and loud / dry / calm / funny / deadpan)
 - **Words I actually use:**
 - **Words I would never say out loud:**
@@ -50,7 +48,7 @@ where the good reels come from.
 ## Off limits
 
 - **Topics I do not post about:**
-- **Clients, numbers or names I cannot say publicly:**
+- **Clients, numbers or names I cannot say publicly:** سعر الباقات (من 5 لـ 7 آلاف جنيه شهرياً) ممنوع يتذكر في أي محتوى عام دلوقتي.
 - **Claims I am not allowed to make:** (regulated industry, employer policy, NDA)
 
 ## Proof I can use
