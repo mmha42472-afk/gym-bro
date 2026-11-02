@@ -1,15 +1,7 @@
-# voice.md
+# voice.md — MedFrame
 
-Copy this to `~/.claude/instagram/voice.md` and fill it in. Every skill in the
-pack reads it. Ten minutes here is the difference between scripts you shoot and
-scripts you rewrite.
-
-If you would rather not fill it in by hand, send Claude three of your own reels
-or captions and say "write my voice.md from these". That works better than
-guessing at the answers.
-
-This file matters more on Instagram than anywhere else, because you have to say
-the words out loud. A line you would never say is not a draft, it is a retake.
+كل مهارات ig-* بتقرأ الملف ده من `.claude/instagram/voice.md` في المشروع.
+حدّثه كل ما حاجة تتغير (رقم جديد، عميل جديد، رأي جديد).
 
 ---
 
@@ -18,8 +10,8 @@ the words out loud. A line you would never say is not a draft, it is a retake.
 - **Name:** محمد أبو علي (Mohamed Abu Ali) — صيدلي
 - **Company:** MedFrame
 - **Language:** عربي، عامية مصرية
-- **Handle:**
-- **What I do, in one sentence:** بعلّم البيرسونال براندينج للعاملين في المجال الطبي فقط، من خلال شركتي MedFrame.
+- **Handle:** @med_frame_studio
+- **What I do, in one sentence:** MedFrame بتعمل البيرسونال براندينج والمحتوى للدكاترة بس: فيديوهات وبوستات ومتابعة الصفحة كل شهر، والدكتور يركز في الكشف.
 - **Who I am talking to:** دكاترة عندهم عيادات خاصة ومعندهمش حضور رقمي قوي (صفحاتهم ضعيفة أو مش موجودة).
 - **What I sell:** باقات شهرية من MedFrame: برامج متابعة + تصوير ومونتاج فيديوهات + تصميم وكتابة بوستات للدكتور. (السعر مش بيتقال في المحتوى.)
 
@@ -63,6 +55,18 @@ never invent one, so if this section is empty, every draft comes back with
 
 ## The ask
 
-- **My keyword CTA, if I use one:** (one word, sayable, no spaces)
-- **What the keyword sends them:**
-- **Where my link goes:**
+- **My keyword CTA, if I use one:** عيادة
+- **What the keyword sends them:** محادثة مباشرة معايا على الرسايل/الواتساب نتكلم فيها عن صفحة الدكتور (السعر بيتقال في الشات بس، مش في المحتوى).
+- **Where my link goes:** واتساب بيزنس (wa.me)
+
+## Profile (live)
+
+- **Name field:** MedFrame | تسويق طبي للدكاترة
+- **Category:** Marketing Agency
+- **Bio:**
+  عندك عيادة ومحدش يعرفك أونلاين؟
+  بنعملك فيديوهات وبوستات ونتابع صفحتك كل شهر، وانت ركز في الكشف.
+  ابعت "عيادة" في الرسايل
+- **Highlights (planned):** إزاي بنشتغل · شغلنا · مين إحنا · أسئلة
+- **Pinned three (to make):** 1) ريل تعريف 2) كاروسيل إزاي الباقة بتشتغل 3) قبل/بعد لصفحة دكتور (أو تقييم صفحة لحد أول عميل)
+- **Profile score:** 22/100 (Nov 2026, قبل التعديلات) — المتوقع ~44 بعد التعديلات النصية

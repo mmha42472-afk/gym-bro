@@ -36,7 +36,7 @@ import re
 import statistics
 import sys
 
-WORD_RE = re.compile(r"[A-Za-z0-9$%'’-]+")
+WORD_RE = re.compile(r"[A-Za-z0-9ء-ي٠-٩ٮ-ۓ۰-۹$%'’-]+")  # Latin + Arabic (MedFrame patch)
 NUMBER_RE = re.compile(
     r"\$\s?\d[\d,]*(?:\.\d+)?"                       # money, whole
     r"|\b\d[\d,]*(?:\.\d+)?\s?"                      # a figure, with or
@@ -78,6 +78,80 @@ STAKES = {
     "still", "already", "only", "without", "versus", "vs", "actually",
 }
 
+# --- MedFrame patch: Egyptian Arabic vocabulary -----------------------------
+# Arabic glues و / ف / ب / ال onto words, and spells alef/yaa/taa marbuta
+# several ways, so every Arabic token is normalised before lookup (see norm()).
+AR_SPOKEN_NUMBERS = {
+    "صفر", "اتنين", "تلاته", "تلات", "اربعه", "اربع", "خمسه", "خمس", "سته", "ست",
+    "سبعه", "سبع", "تمانيه", "تمن", "تسعه", "تسع", "عشره", "عشر", "عشرين",
+    "تلاتين", "اربعين", "خمسين", "ستين", "سبعين", "تمانين", "تسعين", "ميه",
+    "مية", "ميتين", "الف", "الفين", "الاف", "مليون", "ملايين", "نص", "ضعف",
+    "مرتين", "تلت", "ربع",
+}
+AR_MONEY_WORDS = {
+    "جنيه", "جنيهات", "فلوس", "مكسب", "ارباح", "ربح", "دخل", "ايراد", "مرتب",
+    "ايجار", "كشف", "كشوفات", "حجز", "حجوزات", "مريض", "مرضي", "عيان", "عيانين",
+}
+AR_STAKES = {
+    "مش", "محدش", "مفيش", "ماحدش", "ابدا", "عمر", "غلط", "غلطه", "غلطات",
+    "اغلاط", "خساره", "بتخسر", "خسرت", "هتخسر", "ضاع", "ضايع", "بيضيع",
+    "ممنوع", "سر", "اسرار", "الحقيقه", "حقيقه", "بس", "قبل", "بدل", "لازم",
+    "متعملش", "اوعي", "بلاش", "مشكله", "خطر", "خطير", "ندمان", "لسه", "من",
+    "غير", "فاضيه", "فاضي", "كدب", "نصب", "اسوا", "وحش", "فشل", "فشلت",
+    "بطل", "وقف", "حرام", "عيب", "مجاني", "ببلاش", "دفعت", "بتدفع", "اول",
+    "ليه", "فجاه", "صدمه", "ميعرفش", "محدش", "ولا", "حتي", "تاني", "اخر",
+}
+AR_WEAK_OPENERS = [
+    "بص", "بصوا", "النهارده", "انهارده", "اهلا", "ازيكم", "يا جماعه", "طيب",
+    "بصراحه", "في الفيديو", "السلام عليكم", "صباح الخير", "مساء الخير",
+    "خلينا", "انا عايز", "عايز اتكلم", "هو", "يعني", "النهارده هتكلم",
+]
+AR_IMPERATIVES = {
+    "اوعي", "متعملش", "بطل", "جرب", "اعمل", "شوف", "ابعت", "احفظ", "اكتب",
+    "ابدا", "وقف", "خد", "استخدم", "انسي", "سيب", "امسح", "اسمع", "متصدقش",
+    "بلاش", "اتعلم", "صور", "انشر",
+}
+AR_YOU_RE = re.compile(r"(?:^|\s)(?:انت|إنت|أنت|انتي|إنتي|انتو|إنتو|يا ?دكتور|يا ?دكتوره|يا ?دكتورة|يا ?دكاتره|يا ?دكاترة|يا ?دكتورة)(?=\s|$|[،؟!.])")
+AR_ME_RE = re.compile(r"(?:^|\s)(?:انا|أنا|إحنا|احنا|عندي|عندنا|بتاعي|بتاعنا|ليا|لينا)(?=\s|$|[،؟!.])")
+AR_NOT_YOU = {"ذلك", "كذلك", "لذلك", "هناك", "ملك", "شك", "بنك", "سمك", "مسك", "فك", "بك", "ضحك"}
+
+
+def norm(tok):
+    """Normalise an Arabic token for lookup: spelling variants and clitics."""
+    t = tok.strip("'’").lower()
+    if not re.search(r"[\u0600-\u06FF]", t):
+        return t
+    t = re.sub(r"[\u064B-\u065F\u0670\u0640]", "", t)          # harakat, tatweel
+    t = re.sub("[أإآ]", "ا", t).replace("ى", "ي").replace("ة", "ه")
+    return t
+
+
+def ar_variants(tok):
+    t = norm(tok)
+    out = {t}
+    for p in ("و", "ف", "ب", "ل", "ك"):
+        if t.startswith(p) and len(t) > 3:
+            out.add(t[1:])
+    for v in list(out):
+        if v.startswith("ال") and len(v) > 3:
+            out.add(v[2:])
+    return out
+
+
+def in_set(tok, english, arabic):
+    v = ar_variants(tok)
+    return bool(v & english) or bool(v & arabic)
+
+
+def addresses_viewer_ar(w):
+    """Egyptian second person is mostly a suffix: عيادتك، صفحتك، عندك."""
+    for x in w:
+        t = norm(x)
+        if len(t) > 2 and t.endswith("ك") and t not in AR_NOT_YOU and "ك" != t[0:1] * len(t):
+            return x
+    return None
+# ---------------------------------------------------------------------------
+
 # Openers that spend the first second saying nothing.
 WEAK_OPENERS = [
     "so", "ok", "okay", "hey", "hi", "hello", "guys", "yo", "alright",
@@ -96,6 +170,12 @@ IMPERATIVES = {
 }
 
 DEALBREAKERS = [
+    (re.compile(r"^\s*(?:استني|استنى|متقلبش|متعديش|ماتعديش|وقف سكرول)"),
+     "Opens with \"stop scrolling\" (Arabic). Asking for attention proves you have not earned it."),
+    (re.compile(r"(?:في|فى) (?:الفيديو|الريل|الفديو) (?:ده|دا)|(?:هوريك|هوريكم|هقولكم|هقولك) (?:ازاي|إزاي|ازاى)"),
+     "Video preamble (Arabic). Delete it and open on the payoff."),
+    (re.compile(r"^\s*(?:أهلا|اهلا|أهلاً|اهلاً|السلام عليكم|ازيكم|إزيكم|صباح الخير|مساء الخير|هاي)"),
+     "Greeting (Arabic). Nobody came to the feed to be greeted."),
     (re.compile(r"(?i)^\s*(?:stop scrolling|don'?t scroll)"),
      "Opens with \"stop scrolling\". Asking for attention proves you have not earned it."),
     (re.compile(r"(?i)\b(?:in (?:this|today'?s) (?:video|reel)|i'?m going to show you|i'?ll show you how)\b"),
@@ -140,7 +220,8 @@ def check_specificity(text):
     nums = [n.strip() for n in NUMBER_RE.findall(text) if n.strip()]
     propers = set(PROPER_RE.findall(text))
     low = [w.lower().strip("'’") for w in words(text)]
-    spoken = [w for w in low if w in SPOKEN_NUMBERS or w in MONEY_WORDS]
+    spoken = [w for w in low if in_set(w, SPOKEN_NUMBERS, AR_SPOKEN_NUMBERS)
+              or in_set(w, MONEY_WORDS, AR_MONEY_WORDS)]
     hits = len(nums) + len(propers) + len(spoken)
     score = 15.0 if hits == 0 else clamp(45 + hits * 30)
     found = ", ".join(nums[:2] + sorted(propers)[:2] + spoken[:2])
@@ -151,7 +232,7 @@ def check_specificity(text):
 def check_stakes(text):
     """Tension, cost, negation. Something the viewer might lose."""
     w = [x.lower().strip("'’") for x in words(text)]
-    hits = [x for x in w if x in STAKES]
+    hits = [x for x in w if in_set(x, STAKES, AR_STAKES)]
     markers = sorted(set(hits))
     if re.search(r"\$\s?\d", text):
         markers.append("a price")
@@ -171,13 +252,17 @@ def check_frontload(text):
     opener = " ".join(low[:2])
     penalty = 0
     hit_opener = None
-    for weak in WEAK_OPENERS:
-        if opener.startswith(weak) or low[0] == weak:
+    opener_n = " ".join(norm(x) for x in low[:2])
+    for weak in WEAK_OPENERS + [norm(x) for x in AR_WEAK_OPENERS]:
+        if (opener.startswith(weak) or low[0] == weak or opener_n.startswith(weak)
+                or norm(low[0]) == weak):
             penalty, hit_opener = 30, weak
             break
     payload = None
     for i, token in enumerate(low):
-        if (token in STAKES or token in SPOKEN_NUMBERS or token in MONEY_WORDS
+        if (in_set(token, STAKES, AR_STAKES)
+                or in_set(token, SPOKEN_NUMBERS, AR_SPOKEN_NUMBERS)
+                or in_set(token, MONEY_WORDS, AR_MONEY_WORDS)
                 or NUMBER_RE.match(w[i]) or (i and PROPER_RE.match(w[i]))):
             payload = i
             break
@@ -203,9 +288,14 @@ def check_address(text):
     w = [x.lower().strip("'’") for x in words(text)]
     if re.search(r"\b(you|your|you're|youre|yourself)\b", low):
         return 100.0, "speaks to the viewer"
-    if w and w[0] in IMPERATIVES:
+    if AR_YOU_RE.search(text):
+        return 100.0, "speaks to the viewer"
+    suffix = addresses_viewer_ar(w)
+    if suffix:
+        return 100.0, f"speaks to the viewer (\"{suffix}\")"
+    if w and (w[0] in IMPERATIVES or norm(w[0]) in AR_IMPERATIVES):
         return 90.0, f"imperative opener (\"{w[0]}\")"
-    if re.search(r"\b(i|my|me|we|our)\b", low):
+    if re.search(r"\b(i|my|me|we|our)\b", low) or AR_ME_RE.search(text):
         return 70.0, "first person, no viewer named"
     return 35.0, "third person, nobody in the room"
 

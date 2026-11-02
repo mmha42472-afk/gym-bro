@@ -26,15 +26,20 @@ import json
 import re
 import sys
 
-WORD_RE = re.compile(r"[A-Za-z0-9$%'’-]+")
-SENT_RE = re.compile(r"[^.!?]+[.!?]*")
-CONCRETE_RE = re.compile(r"\$\s?\d|\b\d[\d,.]*\b|(?<!^)\b[A-Z][a-z]{2,}\b", re.MULTILINE)
+WORD_RE = re.compile(r"[A-Za-z0-9ء-ي٠-٩ٮ-ۓ۰-۹$%'’-]+")  # Latin + Arabic (MedFrame patch)
+SENT_RE = re.compile(r"[^.!?؟]+[.!?؟]*")
+CONCRETE_RE = re.compile(r"\$\s?\d|\b\d[\d,.]*\b|(?<!^)\b[A-Z][a-z]{2,}\b|جنيه|%|٪", re.MULTILINE)
 STOPWORDS = {
     "the", "a", "an", "and", "or", "but", "if", "of", "to", "in", "on", "for",
     "with", "that", "this", "it", "is", "are", "was", "were", "be", "been",
     "you", "your", "i", "my", "me", "we", "our", "they", "them", "he", "she",
     "so", "just", "not", "no", "do", "did", "does", "have", "has", "had",
     "will", "can", "at", "as", "by", "from", "out", "up", "off", "one", "all",
+    # Egyptian Arabic function words (MedFrame patch)
+    "في", "من", "على", "علي", "عن", "مع", "و", "او", "أو", "بس", "ده", "دي", "دا",
+    "دول", "اللي", "إن", "ان", "انت", "إنت", "انا", "أنا", "احنا", "إحنا", "هو",
+    "هي", "هم", "مش", "كان", "كانت", "يا", "لو", "كده", "عشان", "علشان", "يعني",
+    "ما", "لا", "اه", "ايه", "إيه", "ليه", "إزاي", "ازاي", "كل", "حاجة", "حاجه",
 }
 
 HOOK_WINDOW = 3.0        # seconds. Past this, the thumb has already decided.
