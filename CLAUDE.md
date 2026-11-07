@@ -29,6 +29,13 @@ MedFrame بتعمل البيرسونال براندينج والمحتوى لل�
 | `/ig-audit` | تحليل اللي اتنشر |
 | `/ig-human` | تنضيف أي نص من بصمة الذكاء الاصطناعي |
 
+## مهارات التسويق العامة (marketingskills)
+
+اتسطب 53 مهارة من [coreyhaines31/marketingskills](https://github.com/coreyhaines31/marketingskills) في `.claude/skills/` (MIT، الرخصة في `LICENSE-marketingskills`). منها: `copywriting`, `offers`, `ads`, `ad-creative`, `social`, `content-strategy`, `customer-research`, `marketing-psychology`, `marketing-plan`, `cold-email`, `lead-magnets`, `marketing-council`.
+
+- **لأي حاجة على إنستجرام، مهارات `ig-*` ليها الأولوية** على `social` و `ad-creative`.
+- المهارات دي مكتوبة بالإنجليزي ولـ SaaS في الأساس. استخدمها كإطار تفكير، والناتج يلتزم بقواعد الملف ده و `voice.md` (مصري، من غير سعر، من غير أرقام متألفة).
+
 ## الملفات المشتركة (`.claude/instagram/`)
 
 - `voice.md`: الصوت والعرض والبروفايل
